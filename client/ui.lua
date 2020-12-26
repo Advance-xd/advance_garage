@@ -16,9 +16,18 @@ end)
 local menu = false
 
 
-function openUI() 
-    SetNuiFocus(true, true)
-    SendNUIMessage({type = "open", cars = fetchedVehicles})
+function openUI(car) 
+	SetNuiFocus(true, true)
+	SendNUIMessage({type = "open"})
+	for key, vehicleData in ipairs(car) do
+		local vehicleProps = vehicleData["props"]
+		SendNUIMessage({type = "car", cars = GetLabelText(GetDisplayNameFromVehicleModel(vehicleProps["model"])), plate = vehicleData["plate"], spawn = vehicleProps["model"]})
+		--[[table.insert(menuElements, {
+			["label"] = "Använd " .. GetLabelText(GetDisplayNameFromVehicleModel(vehicleProps["model"])) .. " med plåt - " .. vehicleData["plate"],
+			["vehicle"] = vehicleData
+		})]]
+	end
+    
 end
 
 --[[ESX.TriggerServerCallback("garage:fetchPlayerVehicles", function(fetchedVehicles)
@@ -34,6 +43,16 @@ RegisterNUICallback('close', function(data, cb)
 
 end)
 
+RegisterNUICallback('spawnveh', function(data, cb) 
+	
+	print(data.veh)
+	SpawnVehicle(data.veh, data.name, data.plate)
+	
+
+
+end)
+
+
 function closeUI()
     SetNuiFocus(false, false)
 end
@@ -46,4 +65,9 @@ end)
 RegisterCommand("garageo", function(src)
     openUI()
 
+end)
+
+RegisterNetEvent("advance_garage:open")
+AddEventHandler("advance_garage:open", function(cars)
+	openUI(cars)
 end)

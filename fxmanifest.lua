@@ -1,7 +1,7 @@
 fx_version 'bodacious'
 game 'gta5'
 
-version '1.0'
+version '1.1'
 
 ui_page 'client/html/UI.html'
 
