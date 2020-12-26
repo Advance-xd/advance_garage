@@ -1,23 +1,37 @@
 var inMenu = false
-
+let carselect = null
+$('#general, #waiting, #sellUI, #allUI, #buyUI, #topbar').hide();
 
 $(function() {
     addEventListener('message', function(event) {
         if(event.data.type == "open") {
-            $('#general').hide();
-            var array = event.data.cars
-            for (var e in array) {
-                var obj = array[e];
-
-
-                $('#all tbody').append(`
+            $("#all tbody").empty();
+            $("#all thead").empty();
+            $("#all tbody").hide();
+            $('#general, #topbar').show();
+            
+            
+        } else if(event.data.type == "car") {
+            $('#all thead').append(`
                     <tr>
-                        <th>Grafikkort ${obj}</th>
+                        <th>${event.data.cars}</th>
+                        <th>${event.data.plate}</th>
+                        <th>69</th>
+                        <td>
+                            <input height="1000" type="button"
+                            class=""
+                            value="submit" 
+                            onclick="spawn('${event.data.spawn}','${event.data.cars}','${event.data.plate}')"/>
+
+                        </td>
+
+                    </tr>`)
+            $('#all tbody').append(`
+                    <tr>
+                        <th>${event.data.cars}</th>
                         <th>99.9</th>
                         <th>69</th>
                     </tr>`)
-            }
-            
         }
         
         
@@ -37,3 +51,32 @@ function close() {
     $('body').removeClass("active");
     $.post('http://advance_garage/close', "{}");
 }
+
+$('#close').click(function() {
+    close()
+
+})
+
+$('#selectcar').click(function() {
+    console.log('yeet')
+
+})
+
+function spawn(carr, names, platte) {
+    close()
+    $.post('http://advance_garage/spawnveh', JSON.stringify({veh: carr, name: names, plate: platte}));
+}
+
+/*<td>
+<div class="svg-wrapper">
+    <svg height="40" width="150" xmlns="http://www.w3.org/2000/svg">
+        <rect id="shape" height="40" width="150" />
+        <div id="text">
+        <input height="1000" type="button"
+                class=""
+            value="submit" 
+            onclick="test()">
+        </div>
+    </svg>
+</td>
+</div>*/

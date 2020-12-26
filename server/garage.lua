@@ -48,7 +48,7 @@ end)
 
 ESX.RegisterServerCallback("garage:validateVehicle", function(source, callback, vehicleProps, garage)
 	local player = ESX.GetPlayerFromId(source)
-
+	print(vehicleProps["plate"])
 	if player then
 		local sqlQuery = [[
 			SELECT

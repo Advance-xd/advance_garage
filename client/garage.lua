@@ -215,12 +215,13 @@ OpenGarageMenu = function()
     local currentGarage = cachedData["currentGarage"]
 
     if not currentGarage then return end
-    openIU()
+    
 
     ESX.TriggerServerCallback("garage:fetchPlayerVehicles", function(fetchedVehicles)
-        HandleCamera(currentGarage, true)
+        --HandleCamera(currentGarage, true)
+        TriggerEvent('advance_garage:open', fetchedVehicles)
 
-        local menuElements = {}
+        --[[local menuElements = {}
 
         for key, vehicleData in ipairs(fetchedVehicles) do
             local vehicleProps = vehicleData["props"]
@@ -261,7 +262,7 @@ OpenGarageMenu = function()
             if currentVehicle then
                 SpawnLocalVehicle(currentVehicle["props"])
             end
-        end)
+        end)]]
     end, currentGarage)
 end
 
@@ -645,7 +646,7 @@ end
 SpawnLocalVehicle = function(vehicleProps)
 	local spawnpoint = Config.Garages[cachedData["currentGarage"]]["positions"]["vehicle"]
 
-	WaitForModel(vehicleProps["model"])
+	WaitForModel(vehicleProps)
 
 	if DoesEntityExist(cachedData["vehicle"]) then
 		DeleteEntity(cachedData["vehicle"])
@@ -655,7 +656,7 @@ SpawnLocalVehicle = function(vehicleProps)
 		return ESX.ShowNotification("Något fordon står ivägen.")
 	end
 	
-	if not IsModelValid(vehicleProps["model"]) then
+	if not IsModelValid(vehicleProps) then
 		return
 	end
 
@@ -668,10 +669,10 @@ SpawnLocalVehicle = function(vehicleProps)
 	end)
 end
 
-SpawnVehicle = function(vehicleProps)
-	local spawnpoint = Config.Garages[cachedData["currentGarage"]]["positions"]["vehicle"]
+SpawnVehicle = function(vehicleProps, car, plate)
 
-	WaitForModel(vehicleProps["model"])
+    local spawnpoint = Config.Garages[cachedData["currentGarage"]]["positions"]["vehicle"]
+	--WaitForModel(vehicleProps)
 
 	if DoesEntityExist(cachedData["vehicle"]) then
 		DeleteEntity(cachedData["vehicle"])
@@ -687,7 +688,7 @@ SpawnVehicle = function(vehicleProps)
 		local vehicle = gameVehicles[i]
 
         if DoesEntityExist(vehicle) then
-			if Config.Trim(GetVehicleNumberPlateText(vehicle)) == Config.Trim(vehicleProps["plate"]) then
+			if Config.Trim(GetVehicleNumberPlateText(vehicle)) == Config.Trim(plate) then
 				ESX.ShowNotification("Du har redan ute detta fordon, vänligen parkera fordonet innan du tar ut det igen.")
 
 				return HandleCamera(cachedData["currentGarage"])
@@ -695,12 +696,14 @@ SpawnVehicle = function(vehicleProps)
 		end
 	end
 
-	ESX.Game.SpawnVehicle(vehicleProps["model"], spawnpoint["position"], spawnpoint["heading"], function(yourVehicle)
-		SetVehicleProperties(yourVehicle, vehicleProps)
+	ESX.Game.SpawnVehicle(car, spawnpoint["position"], spawnpoint["heading"], function(yourVehicle)
+		SetVehicleProperties(yourVehicle, car)
+        
+        SetVehicleNumberPlateText(yourVehicle, plate)
 
         NetworkFadeInEntity(yourVehicle, true, true)
 
-		SetModelAsNoLongerNeeded(vehicleProps["model"])
+		SetModelAsNoLongerNeeded(car)
 
 		TaskWarpPedIntoVehicle(PlayerPedId(), yourVehicle, -1)
 
