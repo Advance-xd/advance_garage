@@ -45,7 +45,7 @@ end)
 
 RegisterNUICallback('spawnveh', function(data, cb) 
 	
-	print(data.veh)
+	
 	SpawnVehicle(data.veh, data.name, data.plate)
 	
 
