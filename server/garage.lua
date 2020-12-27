@@ -48,7 +48,11 @@ end)
 
 ESX.RegisterServerCallback("garage:validateVehicle", function(source, callback, vehicleProps, garage)
 	local player = ESX.GetPlayerFromId(source)
-	print(vehicleProps["plate"])
+	
+	str = vehicleProps["plate"]
+	str = str:gsub("%s+", "")
+	str = string.gsub(str, "%s+", "")
+
 	if player then
 		local sqlQuery = [[
 			SELECT
@@ -60,14 +64,26 @@ ESX.RegisterServerCallback("garage:validateVehicle", function(source, callback, 
 		]]
 
 		MySQL.Async.fetchAll(sqlQuery, {
-			["@plate"] = vehicleProps["plate"]
+			["@plate"] = str
 		}, function(responses)
+			
 			if responses[1] then
 				UpdateGarage(vehicleProps, garage)
 
 				callback(true)
 			else
-				callback(false)
+				MySQL.Async.fetchAll(sqlQuery, {
+					["@plate"] = vehicleProps["plate"]
+				}, function(responses)
+					
+					if responses[1] then
+						UpdateGarage(vehicleProps, garage)
+		
+						callback(true)
+					else
+						callback(false)
+					end
+				end)
 			end
 		end)
 	else

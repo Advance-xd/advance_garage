@@ -220,49 +220,6 @@ OpenGarageMenu = function()
     ESX.TriggerServerCallback("garage:fetchPlayerVehicles", function(fetchedVehicles)
         --HandleCamera(currentGarage, true)
         TriggerEvent('advance_garage:open', fetchedVehicles)
-
-        --[[local menuElements = {}
-
-        for key, vehicleData in ipairs(fetchedVehicles) do
-            local vehicleProps = vehicleData["props"]
-
-            table.insert(menuElements, {
-                ["label"] = "Använd " .. GetLabelText(GetDisplayNameFromVehicleModel(vehicleProps["model"])) .. " med plåt - " .. vehicleData["plate"],
-                ["vehicle"] = vehicleData
-            })
-        end
-
-        if #menuElements == 0 then
-            table.insert(menuElements, {
-                ["label"] = "Du har inte några parkerade fordon här."
-            })
-        elseif #menuElements > 0 then
-            SpawnLocalVehicle(menuElements[1]["vehicle"]["props"], currentGarage)
-        end
-
-        ESX.UI.Menu.Open("default", GetCurrentResourceName(), "main_garage_menu", {
-            ["title"] = "Garage - " .. currentGarage,
-            ["align"] = Config.AlignMenu,
-            ["elements"] = menuElements
-        }, function(menuData, menuHandle)
-            local currentVehicle = menuData["current"]["vehicle"]
-
-            if currentVehicle then
-                menuHandle.close()
-
-                SpawnVehicle(currentVehicle["props"])
-            end
-        end, function(menuData, menuHandle)
-            HandleCamera(currentGarage, false)
-
-            menuHandle.close()
-        end, function(menuData, menuHandle)
-            local currentVehicle = menuData["current"]["vehicle"]
-
-            if currentVehicle then
-                SpawnLocalVehicle(currentVehicle["props"])
-            end
-        end)]]
     end, currentGarage)
 end
 

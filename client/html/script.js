@@ -12,26 +12,26 @@ $(function() {
             
             
         } else if(event.data.type == "car") {
+            
             $('#all thead').append(`
                     <tr>
                         <th>${event.data.cars}</th>
                         <th>${event.data.plate}</th>
-                        <th>69</th>
                         <td>
-                            <input height="1000" type="button"
+                            <input type="button"
                             class=""
-                            value="submit" 
+                            value="Ta fram" 
                             onclick="spawn('${event.data.spawn}','${event.data.cars}','${event.data.plate}')"/>
 
                         </td>
 
                     </tr>`)
-            $('#all tbody').append(`
+            /*$('#all tbody').append(`
                     <tr>
                         <th>${event.data.cars}</th>
                         <th>99.9</th>
                         <th>69</th>
-                    </tr>`)
+                    </tr>`)*/
         }
         
         
